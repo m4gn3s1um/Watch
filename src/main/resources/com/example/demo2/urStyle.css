@@ -1,0 +1,7 @@
+/*CSS der styler uret*/
+
+Circle{
+    -fx-stroke: BLACK;
+    -fx-fill: #8A817C;
+    -fx-stroke-width: 8;
+}
