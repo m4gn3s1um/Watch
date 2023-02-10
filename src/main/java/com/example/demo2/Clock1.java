@@ -11,10 +11,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Clock1{
 
@@ -22,14 +24,39 @@ public class Clock1{
     Line minutes_hand = new Line();
     Line hours_hand = new Line();
 
-    //Circle circle = new Circle();
-    @FXML private Circle cirkel;
-
     @FXML private Pane pane;
 
     Circle DOT = new Circle();
 
-    public void initialize() {
+    @FXML
+    private ChoiceBox hoursChoice = new ChoiceBox();
+
+    @FXML
+    private ChoiceBox minutesChoice = new ChoiceBox();
+
+    private static MediaPlayer tiktik;
+
+    public void initialize(){
+
+        Media lyd = new Media(String.valueOf(getClass().getResource("ticking_sound.mp3")));
+        tiktik = new MediaPlayer(lyd);
+
+        tiktik.setAutoPlay(true);
+        tiktik.setCycleCount(MediaPlayer.INDEFINITE);
+
+        tiktik.setStartTime(Duration.seconds(0));
+        tiktik.setStopTime(Duration.seconds(4));
+
+
+        tiktik.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                tiktik.seek(Duration.ZERO);
+                tiktik.play();
+            }
+        });
+
+        setInChoices();
 
         for (int count = 0; count < 60; ++count){
             Line min_indicator = new Line();
@@ -42,6 +69,9 @@ public class Clock1{
 
             min_indicator.getTransforms().add(Transform.rotate(count * 6, 300, 200));
             pane.getChildren().add(min_indicator);
+
+
+
         }
 
         for (int count = 0; count < 12; ++count){
@@ -60,6 +90,8 @@ public class Clock1{
         int hour = java.time.LocalTime.now().getHour();
         int minute = java.time.LocalTime.now().getMinute();
         int second = java.time.LocalTime.now().getSecond();
+
+        System.out.println(java.time.LocalTime.now().getMinute());
 
         double seconds_degree = second * 6;
         double minutes_degree = minute * 6;
@@ -100,7 +132,7 @@ public class Clock1{
         DOT.setRadius(2.0f);
         DOT.setStroke(Color.RED);
         DOT.setFill(Color.RED);
-        DOT.setStrokeWidth(2);
+        DOT.setStrokeWidth(4);
 
         seconds_hand.setStartX(300.0f);
         seconds_hand.setStartY(250.0f);
@@ -110,7 +142,7 @@ public class Clock1{
         seconds_hand.setBlendMode(BlendMode.SRC_OVER);
 
         minutes_hand.setStartX(300.0f);
-        minutes_hand.setStartY(200.0f);
+        minutes_hand.setStartY(220.0f);
         minutes_hand.setEndX(300.0f);
         minutes_hand.setEndY(58.0f);
         minutes_hand.setStroke(Color.WHITE);
@@ -118,7 +150,7 @@ public class Clock1{
         minutes_hand.setBlendMode(BlendMode.SRC_OVER);
 
         hours_hand.setStartX(300.0f);
-        hours_hand.setStartY(200.0f);
+        hours_hand.setStartY(220.0f);
         hours_hand.setEndX(300.0f);
         hours_hand.setEndY(110.0f);
         hours_hand.setStroke(Color.WHITE);
@@ -137,4 +169,12 @@ public class Clock1{
         timer.scheduleAtFixedRate(new Operate (), 0, 1000);
 
     }
+
+    public void setInChoices()
+    {
+        minutesChoice.getItems().addAll("00","05", "10","15","20","25","30","35","40","45","50","55");
+        hoursChoice.getItems().addAll("00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23");
+    }
+
+
 }
